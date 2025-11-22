@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>حاسبة الـ 500</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e1e; /* لون خلفية غامق مريح للعين */
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 10px;
+        }
+        h1 { color: #4caf50; margin-bottom: 20px; }
+        
+        /* تنسيق جدول اللاعبين */
+        .players-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* عمودين للجوال */
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .player-card {
+            background-color: #333;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #4caf50;
+        }
+
+        .player-name { font-size: 1.2em; font-weight: bold; margin-bottom: 5px; }
+        .total-score { font-size: 2.5em; color: #ffeb3b; font-weight: bold; }
+        
+        /* خانات الإدخال */
+        input[type="number"] {
+            width: 80%;
+            padding: 8px;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: none;
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        /* الأزرار */
+        .btn {
+            background-color: #4caf50;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2em;
+            cursor: pointer;
+            width: 80%;
+            margin-top: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .btn:active { transform: scale(0.98); }
+        
+        .btn-reset {
+            background-color: #f44336;
+            margin-top: 30px;
+            font-size: 1em;
+            padding: 10px 20px;
+        }
+
+        /* رسالة الخسارة/الفوز */
+        #winner-msg {
+            display: none;
+            background-color: rgba(0, 0, 0, 0.9);
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 100;
+        }
+        #winner-text { font-size: 3em; color: #4caf50; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+    <h1>حاسبة الـ 500 ♠️</h1>
+
+    <div class="players-container">
+        <div class="player-card">
+            <div class="player-name">اللاعب 1</div>
+            <div class="total-score" id="score1">0</div>
+            <input type="number" id="input1" placeholder="سجل النقاط">
+        </div>
+        <div class="player-card">
+            <div class="player-name">اللاعب 2</div>
+            <div class="total-score" id="score2">0</div>
+            <input type="number" id="input2" placeholder="سجل النقاط">
+        </div>
+        <div class="player-card">
+            <div class="player-name">اللاعب 3</div>
+            <div class="total-score" id="score3">0</div>
+            <input type="number" id="input3" placeholder="سجل النقاط">
+        </div>
+        <div class="player-card">
+            <div class="player-name">اللاعب 4</div>
+            <div class="total-score" id="score4">0</div>
+            <input type="number" id="input4" placeholder="سجل النقاط">
+        </div>
+    </div>
+
+    <button class="btn" onclick="addScores()">سجّل النشرة</button>
+    <br>
+    <button class="btn btn-reset" onclick="resetGame()">تصفير اللعبة (لعبة جديدة)</button>
+
+    <div id="winner-msg">
+        <div id="winner-text"></div>
+        <button class="btn" onclick="resetGame()">العب مرة ثانية</button>
+    </div>
+
+    <script>
+        // المتغيرات لحفظ مجموع النقاط
+        let totals = [0, 0, 0, 0];
+
+        function addScores() {
+            let inputs = [
+                document.getElementById('input1'),
+                document.getElementById('input2'),
+                document.getElementById('input3'),
+                document.getElementById('input4')
+            ];
+
+            let scoresElements = [
+                document.getElementById('score1'),
+                document.getElementById('score2'),
+                document.getElementById('score3'),
+                document.getElementById('score4')
+            ];
+
+            let winnerFound = false;
+
+            // عملية الجمع
+            for (let i = 0; i < 4; i++) {
+                let val = parseInt(inputs[i].value);
+                if (!isNaN(val)) {
+                    totals[i] += val;
+                    scoresElements[i].innerText = totals[i];
+                    inputs[i].value = ''; // مسح الخانة بعد التسجيل
+                }
+                
+                // التحقق من الخسارة (500 أو أكثر)
+                if (totals[i] >= 500) {
+                    showWinner(i + 1);
+                    winnerFound = true;
+                }
+            }
+        }
+
+        function showWinner(playerNum) {
+            document.getElementById('winner-msg').style.display = 'flex';
+            document.getElementById('winner-text').innerText = 'مبروك! خسرت يالشيخ ' + playerNum + ' 😹';
+        }
+
+        function resetGame() {
+            totals = [0, 0, 0, 0];
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById('score' + i).innerText = '0';
+                document.getElementById('input' + i).value = '';
+            }
+            document.getElementById('winner-msg').style.display = 'none';
+        }
+    </script>
+
+</body>
+</html>
